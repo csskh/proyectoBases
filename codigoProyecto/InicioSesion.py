@@ -1,3 +1,4 @@
+from ast import main
 import tkinter as tk 
 from tkinter import *
 from tkinter import ttk 
@@ -9,13 +10,13 @@ import mysql.connector
 
 #---Conexión con MySQL---#
 root = Tk()
-connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='atiDBPruebas$', database='datosProyecto')
+connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='Rs220802', database='datosProyecto')
 c = connection.cursor()
 
 w = 430
 h = 500
 bgcolor = '#bdc3c7'
-fgcolor = '#FFEFD3'
+fgcolor = '#FFFFFF'
 azul = '#001b2e'
 fuente = 'Lucida Sans'
 
@@ -135,7 +136,6 @@ irLoginLabel.place(x=50,y=350)
 
 register_contentframe.pack(fill='both', expand=1)
 
-#---Ingreso de datos---#
 def login():
     username = usuarioEntry.get().strip()
     password = contraEntry.get().strip()
@@ -146,15 +146,14 @@ def login():
     user = c.fetchone()
     if user is not None:
         mainformwindow = tk.Toplevel()
-        app = mainform(mainformwindow)
+        app = ventanaMenuOpciones(mainformwindow)
         root.withdraw() 
         mainformwindow.protocol("WM_DELETE_WINDOW", salir) 
 
     else:
         messagebox.showwarning('Error','Rol o Usuario o Contraseña INCORRECTA')
-
-
 entrarButton['command'] = login
+
 
 #---Desplegar el menú de Iniciar Sesión---#
 def irLogin():
@@ -203,6 +202,116 @@ def registrar():
         messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios')
 
 registrarButton['command'] = registrar
+
+#---------------------------------------------------Menú de Opciones---------------------------------------------------#
+
+def ventanaMenuOpciones(root):
+    w = 1000
+    h = 600
+    root.overrideredirect(1)
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws-w)/2
+    y = (hs-h)/2
+    root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+    headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+    headerFrame.pack()
+
+    salirButton = tk.Button(root, text=' X ', borderwidth=1, relief='raised')
+    salirButton.config(bg=bgcolor, font='Cambria 12 bold', fg= azul)
+    salirButton.pack()
+    salirButton.place(x=950, y=18)
+    salirButton['command'] = salir
+        
+    menuLabel = tk.Label(headerFrame, text='MENÚ DE OPCIONES', font=(fuente,30, 'bold'), fg=fgcolor,bg=azul)
+    menuLabel.place(x=300,y=10)
+
+    adminLabel = tk.Label(root, text='Opciones del Admin',font=(fuente,20, 'bold'), fg=azul)
+    adminLabel.place(x=60, y=80)
+
+    consultLabel = tk.Label(root, text='Opciones del Consultor',font=(fuente,20, 'bold'), fg=azul)
+    consultLabel.place(x=600, y=80)
+
+    modiLabel = tk.Label(root, text='Modificaciones',font=(fuente,20, 'bold'), fg=azul)
+    modiLabel.place(x=380, y=400)
+
+    botonRE = tk.Button(root, text='Registrar Escuela/\nÁrea Académica', borderwidth=1, relief='raised')
+    botonRE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonRE.pack()
+    botonRE.place(x=60, y=130, width=300)
+
+    botonRC = tk.Button(root, text='Registrar Curso', borderwidth=1, relief='raised')
+    botonRC.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonRC.pack()
+    botonRC.place(x=60, y=210, width=300)
+
+    botonRCR = tk.Button(root, text='Asignar Requisito y/o \n Correquisitos a un Curso', borderwidth=1, relief='raised')
+    botonRCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonRCR.pack()
+    botonRCR.place(x=60, y=260, width=300)
+
+    botonRPE = tk.Button(root, text='Registrar Plan de Estudio', borderwidth=1, relief='raised')
+    botonRPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonRPE.pack()
+    botonRPE.place(x=60, y=340, width=300)
+
+    botonCPE = tk.Button(root, text='Consultar Plan de Estudio', borderwidth=1, relief='raised')
+    botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonCPE.pack()
+    botonCPE.place(x=620, y=130, width=300)
+
+    botonCCPE = tk.Button(root, text='Consultar Curso en \nPlan de Estudio', borderwidth=1, relief='raised')
+    botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonCCPE.pack()
+    botonCCPE.place(x=620, y=190, width=300)
+
+    botonCR = tk.Button(root, text='Consultar Requisitos', borderwidth=1, relief='raised')
+    botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonCR.pack()
+    botonCR.place(x=620, y=280, width=300)
+
+    botonCCR = tk.Button(root, text='Consultar Correquisitos', borderwidth=1, relief='raised')
+    botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonCCR.pack()
+    botonCCR.place(x=620, y=340, width=300)
+
+    botonER = tk.Button(root, text='Eliminar Requisito ', borderwidth=1, relief='raised')
+    botonER.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonER.pack()
+    botonER.place(x=30, y=480, width=300)
+
+    botonECR = tk.Button(root, text='Eliminar Correquisito ', borderwidth=1, relief='raised')
+    botonECR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonECR.pack()
+    botonECR.place(x=345, y=480, width=300)
+
+    botonC = tk.Button(root, text='Eliminar Curso ', borderwidth=1, relief='raised')
+    botonC.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonC.pack()
+    botonC.place(x=660, y=480, width=300)
+    botonC['command']=abrirVentana
+
+def abrirVentana():
+    win = tk.Toplevel()
+    app = registro(win)
+    root.withdraw()
+    win.protocol("WM_DELETE_WINDOW", salir) 
+
+def registro(root):
+    w = 1000
+    h = 600
+    root.overrideredirect(1)
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws-w)/2
+    y = (hs-h)/2
+    root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+    headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+    headerFrame.pack()
+    
+
+
+
 
 root.mainloop()
 
