@@ -56,7 +56,23 @@ class mainform:
         
         
 
-        
+    
+    def registroEscuela(self, master):
+        registroFrame = tk.Frame(self.master, width=w, height=h)
+        registroFrame.pack()
+        registroEscLabel = tk.Label(registroFrame, text='Registro de escuela o area academica:', font=(fuente,16), fg='#2A2C2B',bg="#ecf0f1")
+        registroEscLabel.place(x=72, y=-70)
+
+        escuelaLabel = tk.Label(registroFrame, text='Nombre:', font=(fuente,16), fg='#2A2C2B',bg="#ecf0f1")
+        registroEscLabel.place(x=82, y=-20)
+        escuelaEntry = tk.Entry(registroFrame, font=(fuente,16))
+        escuelaEntry.place(x=120, y=-20, width=250)
+
+        botonRE = tk.Button(self.master, text='Registrar Escuela', borderwidth=1, relief='raised')
+        botonRE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+        botonRE.pack()
+        botonRE.place(x=60, y=130, width=300)
+        botonRE["command"] = registroEscuela()
 
 
 
