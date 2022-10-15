@@ -702,14 +702,7 @@ def consultarPlan():
                  
        '''
        def consultarPlan
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+           
         '''
 
 
@@ -762,15 +755,7 @@ def consultarCurso():
                    
        '''
         def consultarCurso
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-       '''
+           '''
 
 
 
@@ -817,14 +802,7 @@ def consultarReq():
                           
        '''
         def consultarReq
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+          
      
        '''
        botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
@@ -869,14 +847,7 @@ def consultarCo():
                           
        '''
         def consultarCo
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+            
      
       
        '''
