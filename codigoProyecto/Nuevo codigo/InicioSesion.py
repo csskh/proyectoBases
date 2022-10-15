@@ -10,7 +10,7 @@ import mysql.connector
 
 #---Conexión con MySQL---#
 root = Tk()
-connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='Rs220802', database='datosProyecto')
+connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='atiDBPruebas$', database='datosProyecto')
 c = connection.cursor()
 
 w = 430
@@ -345,22 +345,25 @@ def registrarEscuela():
         botonLC.pack()
         botonLC.place(x=340, y=400, width=200)
 
-        '''
-        def registrar
+        
+        def registroDatos():
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
 
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-        '''
+            if len(nombre) > 0 and len(codigo) == 2:
+                vals = (codigo, nombre)
+                insert_query = "INSERT INTO escuela(codigoEscuela, nombreEscuela) VALUES (%s, %s)"
+                c.execute(insert_query, vals)
+                connection.commit()
+                messagebox.showinfo('Registrado','La escuela ha sido registrada')
+            else:
+                messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios')
             
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
         botonR.pack()
         botonR.place(x=150, y=500, width=300)
+        botonR['command']=registroDatos
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -696,13 +699,9 @@ def consultarPlan():
        vigenciaEntry = StringVar()
        vigenciaEntry = tk.Entry(root, font=(fuente,14))
        vigenciaEntry.place(x=320, y=260, width=180, height=30)
-                            
-
-
-
-              
-    '''
-        def consultarPlan
+                 
+       '''
+       def consultarPlan
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
 
@@ -716,10 +715,10 @@ def consultarPlan():
 
     
 
-        botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-        botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-        botonCPE.pack()
-        botonCPE.place(x=620, y=130, width=300)
+       botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+       botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+       botonCPE.pack()
+       botonCPE.place(x=620, y=130, width=300)
 
     else: 
          messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
@@ -761,7 +760,7 @@ def consultarCurso():
        planEntry.place(x=60, y=210, width=480, height=30)
 
                    
-    '''
+       '''
         def consultarCurso
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
@@ -771,16 +770,16 @@ def consultarCurso():
             c.execute(insert_query, vals)
             connection.commit()
             messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-        '''
+       '''
 
 
 
 
 
-    botonCCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-    botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-    botonCCPE.pack()
-    botonCCPE.place(x=620, y=190, width=300)
+       botonCCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+       botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+       botonCCPE.pack()
+       botonCCPE.place(x=620, y=190, width=300)
 
     else: 
          messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
@@ -816,7 +815,7 @@ def consultarReq():
             nombreEntry.delete(0, "end")
 
                           
-    '''
+       '''
         def consultarReq
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
@@ -827,11 +826,11 @@ def consultarReq():
             connection.commit()
             messagebox.showinfo('Registrado','Su usuario ha sido registrado')
      
-        '''
-    botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-    botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-    botonCR.pack()
-    botonCR.place(x=620, y=280, width=300)
+       '''
+       botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+       botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+       botonCR.pack()
+       botonCR.place(x=620, y=280, width=300)
 
     else: 
          messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
@@ -868,7 +867,7 @@ def consultarCo():
             nombreEntry.delete(0, "end")
 
                           
-     '''
+       '''
         def consultarCo
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
@@ -880,12 +879,12 @@ def consultarCo():
             messagebox.showinfo('Registrado','Su usuario ha sido registrado')
      
       
-        '''
+       '''
 
-     botonCCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-     botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-     botonCCR.pack()
-     botonCCR.place(x=620, y=340, width=300)
+       botonCCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+       botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+       botonCCR.pack()
+       botonCCR.place(x=620, y=340, width=300)
 
      else: 
          messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
