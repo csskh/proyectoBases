@@ -1,4 +1,5 @@
 from ast import main
+from calendar import month
 import tkinter as tk 
 from tkinter import *
 from tkinter import ttk 
@@ -6,7 +7,6 @@ from tkinter.ttk import *
 from tkinter import filedialog
 from tkinter import messagebox
 import mysql.connector
-from functools import partial
 
 #---Conexión con MySQL---#
 root = Tk()
@@ -247,19 +247,19 @@ def ventanaMenuOpciones(root):
     botonRC.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonRC.pack()
     botonRC.place(x=60, y=210, width=300)
-    #botonRC['command']=
+    botonRC['command']= registrarCurso
 
     botonRCR = tk.Button(root, text='Asignar Requisito y/o \n Correquisitos a un Curso', borderwidth=1, relief='raised')
     botonRCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonRCR.pack()
     botonRCR.place(x=60, y=260, width=300)
-    #botonRCR['command']=
+    botonRCR['command']=asignarRC
 
     botonRPE = tk.Button(root, text='Registrar Plan de Estudio', borderwidth=1, relief='raised')
     botonRPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonRPE.pack()
     botonRPE.place(x=60, y=340, width=300)
-    #botonRPE['command']=
+    botonRPE['command']=registrarPE
 
     botonCPE = tk.Button(root, text='Consultar Plan de Estudio', borderwidth=1, relief='raised')
     botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
@@ -324,49 +324,325 @@ def registrarEscuela():
 
         nombreLabel = tk.Label(root, text='Nombre Escuela:', fg=azul, font=(fuente, 20, 'bold'))
         nombreLabel.pack()
-        nombreLabel.place(x=60, y=160)
+        nombreLabel.place(x=60, y=130)
 
-        nombreEntry = StringVar()
-        nombreEntry = tk.Entry(root, font=(fuente,14))
-        nombreEntry.place(x=60, y=210, width=480, height=30)
+        nombreEntry = tk.Entry(root, font=(fuente,16))
+        nombreEntry.place(x=60, y=180, width=480, height=40)
 
         codigoLabel = tk.Label(root, text='Código:', fg=azul, font=(fuente, 20, 'bold'))
         codigoLabel.pack()
-        codigoLabel.place(x=60, y=280)
+        codigoLabel.place(x=60, y=260)
 
-        codigoEntry = StringVar()
-        codigoEntry = tk.Entry(root, font=(fuente,14))
-        codigoEntry.place(x=60, y=330, width=480, height=30)
-
+        codigoEntry = tk.Entry(root, font=(fuente,16))
+        codigoEntry.place(x=60, y=320, width=480, height=40)
         
         def limpiarCampos():
-            nombreEntry.set('')
-            codigoEntry.set('')
+            nombreEntry.delete(0, "end")
+            codigoEntry.delete(0, "end")
             
         botonLC = tk.Button(root, text='Limpiar Campos', borderwidth=1, relief='raised', command=limpiarCampos)
         botonLC.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonLC.pack()
         botonLC.place(x=340, y=400, width=200)
 
+        '''
+        def registrar
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+            
+        botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
+        botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
+        botonR.pack()
+        botonR.place(x=150, y=500, width=300)
+
+    else: 
+        messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
+
+def registrarCurso():
+    if rol == '1':
+        root = tk.Toplevel()
+        w = 600
+        h = 600
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
+
+        labelFrame = tk.Label(headerFrame, text='Registrar Cursos', bg=azul, fg=fgcolor, font=(fuente, 24))
+        labelFrame.pack()
+        labelFrame.place(x=180, y=15)
+
+        nombreLabel = tk.Label(root, text='Nombre Escuela:', fg=azul, font=(fuente, 20, 'bold'))
+        nombreLabel.pack()
+        nombreLabel.place(x=40, y=90)
+
+        opciones = ['Opcion 1', 'Opcion 2']
+        opcionesVar = tk.StringVar()
+
+        nombreEntry = tk.OptionMenu(root, opcionesVar, *opciones)
+        nombreEntry.config(font=(fuente, 16, 'bold'))
+        nombreEntry.place(x=40, y=130, width=520, height=40)
+
+        nombreCLabel = tk.Label(root, text='Nombre del Curso:', fg=azul, font=(fuente, 20, 'bold'))
+        nombreCLabel.pack()
+        nombreCLabel.place(x=40, y=180)
+
+        nombreCEntry = tk.Entry(root, font=(fuente,14))
+        nombreCEntry.place(x=40, y=220, width=520, height=40)
+
+        codigoLabel = tk.Label(root, text='Código del Curso:', fg=azul, font=(fuente, 20, 'bold'))
+        codigoLabel.pack()
+        codigoLabel.place(x=40,y=280)
+
+        codigoEntry = tk.Entry(root, font=(fuente,14))
+        codigoEntry.place(x=320, y=280, width=240, height=40)
+
+        creditosLabel = tk.Label(root, text='Créditos:', fg=azul, font=(fuente, 20, 'bold'))
+        creditosLabel.pack()
+        creditosLabel.place(x=40, y=340)
+
+        creditos = [0,1,2,3,4]
+        creditosVar = StringVar()
+
+        creditosEntry = tk.OptionMenu(root, creditosVar, *creditos)
+        creditosEntry.config(font=(fuente, 16, 'bold'))
+        creditosEntry.place(x=320, y=340, width=240, height=40)
+
+        horasLabel = tk.Label(root, text='Horas Lectivas:', fg=azul, font=(fuente, 20, 'bold'))
+        horasLabel.pack()
+        horasLabel.place(x=40, y=400)
+
+        horas = [1,2,3,4,5]
+        horasVar = StringVar()
+
+        horasEntry = tk.OptionMenu(root, horasVar, *horas)
+        horasEntry.config(font=(fuente, 16, 'bold'))
+        horasEntry.place(x=320, y=400, width=240, height=40)
+
+        def limpiarCampos():
+            nombreCEntry.delete(0, "end")
+            codigoEntry.delete(0, 'end')
+            
+        botonLC = tk.Button(root, text='Limpiar Campos', borderwidth=1, relief='raised', command=limpiarCampos)
+        botonLC.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
+        botonLC.pack()
+        botonLC.place(x=350, y=480, width=200)
+
+        '''
+        def registrar
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+            
+        botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
+        botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
+        botonR.pack()
+        botonR.place(x=40, y=480, width=300)
+
+    else: 
+        messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
+
+def asignarRC():
+    if rol == '1':
+        root = tk.Toplevel()
+        w = 600
+        h = 600
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
+
+        labelFrame = tk.Label(headerFrame, text='Asignar Requisitos y/o Correquisitos', bg=azul, fg=fgcolor, font=(fuente, 24))
+        labelFrame.pack()
+        labelFrame.place(x=20, y=15)
+
+        nombreLabel = tk.Label(root, text='Nombre Escuela:', fg=azul, font=(fuente, 20, 'bold'))
+        nombreLabel.pack()
+        nombreLabel.place(x=40, y=90)
+
+        opciones = ['Opcion 1', 'Opcion 2']
+        opcionesVar = tk.StringVar()
+
+        nombreEntry = tk.OptionMenu(root, opcionesVar, *opciones)
+        nombreEntry.config(font=(fuente, 16, 'bold'))
+        nombreEntry.place(x=40, y=130, width=520, height=40)
+
+        codigoLabel = tk.Label(root, text='Código del Curso:', fg=azul, font=(fuente, 20, 'bold'))
+        codigoLabel.pack()
+        codigoLabel.place(x=40,y=200)
+
+        codigoEntry = tk.Entry(root, font=(fuente,14))
+        codigoEntry.place(x=320, y=200, width=240, height=40)
+
+        reqLabel = tk.Label(root, text='Requisito:', fg=azul, font=(fuente, 20, 'bold'))
+        reqLabel.pack()
+        reqLabel.place(x=40, y=260)
+
+        codReq = tk.Label(root, text='Código del Curso:', fg=azul, font=(fuente, 18, 'bold'))
+        codReq.pack()
+        codReq.place(x=40, y=340)
+
+        codigoR = [0,1,2,3,4]
+        codigoRVar = StringVar()
+
+        codREntry = tk.OptionMenu(root, codigoRVar, *codigoR)
+        codREntry.config(font=(fuente, 16, 'bold'))
+        codREntry.place(x=40, y=400, width=240, height=40)
+
+        corrLabel = tk.Label(root, text='Correquisito:', fg=azul, font=(fuente, 20, 'bold'))
+        corrLabel.pack()
+        corrLabel.place(x=340, y=260)
+
+        codCorr = tk.Label(root, text='Código del Curso:', fg=azul, font=(fuente, 18, 'bold'))
+        codCorr.pack()
+        codCorr.place(x=340, y=340)
+
+        codigoC = [1,2,3,4,5]
+        codigoCVar = StringVar()
+
+        codCEntry = tk.OptionMenu(root, codigoCVar, *codigoC)
+        codCEntry.config(font=(fuente, 16, 'bold'))
+        codCEntry.place(x=340, y=400, width=240, height=40)
+
+        '''
+        def registrarRequisito
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+            
+        botonRR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
+        botonRR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
+        botonRR.pack()
+        botonRR.place(x=40, y=480, width=240)
+
+        
+        '''
+        def registrarCorrequisito
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+
         botonRC = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonRC.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
         botonRC.pack()
-        botonRC.place(x=150, y=500, width=300)
+        botonRC.place(x=340, y=480, width=240)
+
+    else: 
+        messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
+
+def registrarPE():
+    if rol == '1':
+        root = tk.Toplevel()
+        w = 600
+        h = 600
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
+
+        labelFrame = tk.Label(headerFrame, text='Registrar Plan de Estudio', bg=azul, fg=fgcolor, font=(fuente, 24))
+        labelFrame.pack()
+        labelFrame.place(x=120, y=15)
+
+        nombreLabel = tk.Label(root, text='Escuela propietaria del plan:', fg=azul, font=(fuente, 20, 'bold'))
+        nombreLabel.pack()
+        nombreLabel.place(x=40, y=90)
+
+        escuela = [1,2]
+        escuelaVar = StringVar()
+
+        escuelaEntry = tk.OptionMenu(root, escuelaVar, *escuela)
+        escuelaEntry.config(font=(fuente, 16, 'bold'))
+        escuelaEntry.place(x=40, y=140, width=520, height=40)
+
+        codigoLabel = tk.Label(root, text='Código del plan:', fg=azul, font=(fuente, 20, 'bold'))
+        codigoLabel.pack()
+        codigoLabel.place(x=40, y=200)
+
+        codigoEntry = tk.Entry(root, font=(fuente,16))
+        codigoEntry.place(x=320, y=200, width=240, height=40)
+
+        vigenciaLabel = tk.Label(root, text='Vigencia del plan:', fg=azul, font=(fuente, 20, 'bold'))
+        vigenciaLabel.pack()
+        vigenciaLabel.place(x=40, y=260)
+        
+        vigenciaEntry = tk.Entry(root, font=(fuente,16))
+        vigenciaEntry.pack()
+        vigenciaEntry.place(x=320, y=260, width=240, height=40)
+       
+        codigoCurso = tk.Label(root, text='Código del curso que \nforma parte del plan:', fg=azul, font=(fuente, 18, 'bold'), justify='left')
+        codigoCurso.pack()
+        codigoCurso.place(x=40, y=320)
+
+        codigoCursoEntry = tk.Entry(root, font=(fuente,16))
+        codigoCursoEntry.pack()
+        codigoCursoEntry.place(x=320, y=330, width=240, height=40)
+
+        bloqueLabel = tk.Label(root, text='Bloque:', fg=azul, font=(fuente, 18, 'bold'))
+        bloqueLabel.pack()
+        bloqueLabel.place(x=40, y=390)
+       
+        bloque = ['1 Semestre', '2 Semestre', 'Verano']
+        bloqueVar = StringVar
+
+        bloqueEntry = tk.OptionMenu(root, bloqueVar, *bloque)
+        bloqueEntry.config(font=(fuente, 20, 'bold'))
+        bloqueEntry.place(x=320, y=390, width=240, height=40)
 
 
         '''
-        nombre = nombreEntry.get().strip()
-        codigo = codigoEntry.get().strip()
+        def registrar
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
 
-        vals = (usuario, email, contra, rol)
-        insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-        c.execute(insert_query, vals)
-        connection.commit()
-        messagebox.showinfo('Registrado','Su usuario ha sido registrado')'''
-
-    
-
-
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+            
+        botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
+        botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
+        botonR.pack()
+        botonR.place(x=150, y=500, width=300)
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -375,34 +651,7 @@ def registrarEscuela():
 
 
 
+
+
+#---------------------------------------------------Final---------------------------------------------------#
 root.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
