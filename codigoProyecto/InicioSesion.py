@@ -291,6 +291,7 @@ def ventanaMenuOpciones(root):
     botonC.place(x=660, y=480, width=300)
     botonC['command']=abrirVentana
 
+'''
 def abrirVentana():
     win = tk.Toplevel()
     app = registro(win)
@@ -308,7 +309,7 @@ def registro(root):
     root.geometry("%dx%d+%d+%d" % (w, h, x, y))
     headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
     headerFrame.pack()
-    
+'''
 
 
 
