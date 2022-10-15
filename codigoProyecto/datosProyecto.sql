@@ -40,12 +40,10 @@ CREATE TABLE `escuela` (
   `idEscuela` int NOT NULL AUTO_INCREMENT,
   `codigoEscuela` varchar(2) NOT NULL,
   `nombreEscuela` varchar(50) NOT NULL,
-  #`numPlan` int NOT NULL,
   PRIMARY KEY (`idEscuela`),
   UNIQUE KEY `idEscuela_UNIQUE` (`idEscuela`),
   UNIQUE KEY `codigoEscuela_UNIQUE` (`codigoEscuela`),
   UNIQUE KEY `nombreEscuela_UNIQUE` (`nombreEscuela`)
-  #UNIQUE KEY `numPlan_UNIQUE` (`numPlan`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `curso` (
@@ -98,7 +96,6 @@ ALTER TABLE usuario ADD CONSTRAINT `idRolFK` FOREIGN KEY (`idRol`) REFERENCES `r
 ALTER TABLE planEstudios ADD CONSTRAINT `emailUsuarioFK` FOREIGN KEY (`emailUsuario`) REFERENCES `usuario` (`emailUsuario`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE planEstudios ADD CONSTRAINT `idCursoFK` FOREIGN KEY (`idCurso`) REFERENCES `curso` (`idCurso`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE planEstudios ADD CONSTRAINT `idEscuelaFK` FOREIGN KEY (`idEscuela`) REFERENCES `escuela` (`idEscuela`) ON DELETE RESTRICT ON UPDATE CASCADE;
-#ALTER TABLE escuela ADD CONSTRAINT `numPlanFK` FOREIGN KEY (`numPlan`) REFERENCES `planEstudios` (`numPlan`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE curso ADD CONSTRAINT `codigoEscuelaFK` FOREIGN KEY (`codigoEscuela`) REFERENCES `escuela` (`codigoEscuela`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE curso ADD CONSTRAINT `idRequisitoFK` FOREIGN KEY (`idRequisito`) REFERENCES `requisito` (`idRequisito`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE curso ADD CONSTRAINT `idCorrequisitoFK` FOREIGN KEY (`idCorrequisito`) REFERENCES `correquisito` (`idCorrequisito`) ON DELETE RESTRICT ON UPDATE CASCADE;
