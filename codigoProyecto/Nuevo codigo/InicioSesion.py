@@ -265,25 +265,25 @@ def ventanaMenuOpciones(root):
     botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonCPE.pack()
     botonCPE.place(x=620, y=130, width=300)
-    #botonCPE['command']=
+    botonCPE['command']=consultarPlan
 
     botonCCPE = tk.Button(root, text='Consultar Curso en \nPlan de Estudio', borderwidth=1, relief='raised')
     botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonCCPE.pack()
     botonCCPE.place(x=620, y=190, width=300)
-    #botonCCPE['command']=
+    botonCCPE['command']=consultarCurso
 
     botonCR = tk.Button(root, text='Consultar Requisitos', borderwidth=1, relief='raised')
     botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonCR.pack()
     botonCR.place(x=620, y=280, width=300)
-    #botonCR['command']=
+    botonCR['command']=consultarReq
 
     botonCCR = tk.Button(root, text='Consultar Correquisitos', borderwidth=1, relief='raised')
     botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonCCR.pack()
     botonCCR.place(x=620, y=340, width=300)
-    #botonCCR['command']=
+    botonCCR['command']=consultarReq
 
     botonER = tk.Button(root, text='Eliminar Requisito ', borderwidth=1, relief='raised')
     botonER.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
@@ -647,6 +647,248 @@ def registrarPE():
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
 
+#------------------------------ Rol de consultor ----------------------------------#
+
+
+
+def consultarPlan():
+    if rol == '2':
+       root = tk.Toplevel()
+       w = 600
+       h = 600
+       ws = root.winfo_screenwidth()
+       hs = root.winfo_screenheight()
+       x = (ws-w)/2
+       y = (hs-h)/2
+       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+       root.resizable(0,0)
+       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+       headerFrame.pack()
+
+       labelFrame = tk.Label(headerFrame, text='Consultar Plan de Estudio', bg=azul, fg=fgcolor, font=(fuente, 24))
+       labelFrame.pack()
+       labelFrame.place(x=20, y=15)
+
+       escuelaLabel = tk.Label(root, text='Escuela propietaria del plan:', fg=azul, font=(fuente, 20, 'bold'))
+       escuelaLabel.pack()
+       escuelaLabel.place(x=60, y=160)
+
+       opciones = ['Escuela 1', 'Escuela 2', 'Escuela 3']
+       opcionesVar = tk.StringVar()
+
+       escuelaEntry = tk.OptionMenu(root, opcionesVar, *opciones)
+       escuelaEntry.config(font=(fuente, 16, 'bold'))
+       escuelaEntry.place(x=40, y=130, width=520, height=40)
+
+       codigoLabel = tk.Label(root, text='Código Plan de Estudios:', fg=azul, font=(fuente, 20, 'bold'))
+       codigoLabel.pack()
+       codigoLabel.place(x=60, y=280)
+
+       codigoEntry = StringVar()
+       codigoEntry = tk.Entry(root, font=(fuente,14))
+       codigoEntry.place(x=60, y=330, width=480, height=30)
+
+
+       vigenciaLabel = tk.label(root, text = 'Vigencia del plan de estudios', fg = azul, font = (fuente, 16, 'bold'))
+       vigenciaLabel.pack()
+       vigenciaLabel.place(x = 40, y = 260)
+
+       vigenciaEntry = StringVar()
+       vigenciaEntry = tk.Entry(root, font=(fuente,14))
+       vigenciaEntry.place(x=320, y=260, width=180, height=30)
+                            
+
+
+
+              
+    '''
+        def consultarPlan
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+
+
+    
+
+        botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+        botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+        botonCPE.pack()
+        botonCPE.place(x=620, y=130, width=300)
+
+    else: 
+         messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
+
+
+def consultarCurso():
+    if rol == '2':
+       root = tk.Toplevel()
+       w = 600
+       h = 600
+       ws = root.winfo_screenwidth()
+       hs = root.winfo_screenheight()
+       x = (ws-w)/2
+       y = (hs-h)/2
+       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+       root.resizable(0,0)
+       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+       headerFrame.pack()
+
+       labelFrame = tk.Label(headerFrame, text='Consultar Curso', bg=azul, fg=fgcolor, font=(fuente, 30))
+       labelFrame.pack()
+       labelFrame.place(x=20, y=15)
+
+       nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
+       nombreLabel.pack()
+       nombreLabel.place(x=120, y=60)
+
+       nombreEntry = StringVar()
+       nombreEntry = tk.Entry(root, font=(fuente,14))
+       nombreEntry.place(x=120, y=60, width=280, height=30)
+
+
+       planLabel = tk.Label(root, text='Plan al que pertenece:', fg=azul, font=(fuente, 20, 'bold'))
+       planLabel.pack()
+       planLabel.place(x=60, y=160)
+
+       planEntry = StringVar()
+       planEntry = tk.Entry(root, font=(fuente,14))
+       planEntry.place(x=60, y=210, width=480, height=30)
+
+                   
+    '''
+        def consultarCurso
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        '''
+
+
+
+
+
+    botonCCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+    botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonCCPE.pack()
+    botonCCPE.place(x=620, y=190, width=300)
+
+    else: 
+         messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
+
+
+def consultarReq():
+    if rol == '2':
+       root = tk.Toplevel()
+       w = 600
+       h = 600
+       ws = root.winfo_screenwidth()
+       hs = root.winfo_screenheight()
+       x = (ws-w)/2
+       y = (hs-h)/2
+       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+       root.resizable(0,0)
+       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+       headerFrame.pack()
+
+       labelFrame = tk.Label(headerFrame, text='Consultar Requisitos de un curso', bg=azul, fg=fgcolor, font=(fuente, 30))
+       labelFrame.pack()
+       labelFrame.place(x=20, y=15)
+
+       nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
+       nombreLabel.pack()
+       nombreLabel.place(x=120, y=80)
+
+       nombreEntry = StringVar()
+       nombreEntry = tk.Entry(root, font=(fuente,14))
+       nombreEntry.place(x=120, y=80, width=280, height=40)
+
+       def limpiarCampos():
+            nombreEntry.delete(0, "end")
+
+                          
+    '''
+        def consultarReq
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+     
+        '''
+    botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+    botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+    botonCR.pack()
+    botonCR.place(x=620, y=280, width=300)
+
+    else: 
+         messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
+
+
+def consultarCo():
+     if rol == '2':
+       root = tk.Toplevel()
+       w = 600
+       h = 600
+       ws = root.winfo_screenwidth()
+       hs = root.winfo_screenheight()
+       x = (ws-w)/2
+       y = (hs-h)/2
+       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+       root.resizable(0,0)
+       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+       headerFrame.pack()
+
+       labelFrame = tk.Label(headerFrame, text='Consultar correquisitos de un curso', bg=azul, fg=fgcolor, font=(fuente, 30))
+       labelFrame.pack()
+       labelFrame.place(x=20, y=15)
+
+       nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
+       nombreLabel.pack()
+       nombreLabel.place(x=120, y=80)
+
+       nombreEntry = StringVar()
+       nombreEntry = tk.Entry(root, font=(fuente,14))
+       nombreEntry.place(x=120, y=80, width=280, height=40)
+
+
+       def limpiarCampos():
+            nombreEntry.delete(0, "end")
+
+                          
+     '''
+        def consultarCo
+            nombre = nombreEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+
+            vals = (usuario, email, contra, rol)
+            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+            c.execute(insert_query, vals)
+            connection.commit()
+            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+     
+      
+        '''
+
+     botonCCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+     botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+     botonCCR.pack()
+     botonCCR.place(x=620, y=340, width=300)
+
+     else: 
+         messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
 
 
 
