@@ -15,7 +15,7 @@ CREATE TABLE `rol` (
 
 CREATE TABLE `usuario` (
   `idUsuario` int NOT NULL,
-  `emailUsuario` varchar(50) NOT NULL,
+  `emailUsuario` varchar(100) NOT NULL,
   `contrasena` varchar(50) NOT NULL,
   `idRol` int NOT NULL,
   PRIMARY KEY (`idUsuario`),
@@ -26,7 +26,7 @@ CREATE TABLE `usuario` (
 CREATE TABLE `escuela` (
   `idEscuela` int NOT NULL AUTO_INCREMENT,
   `codigoEscuela` varchar(2) NOT NULL,
-  `nombreEscuela` varchar(50) NOT NULL,
+  `nombreEscuela` varchar(100) NOT NULL,
   PRIMARY KEY (`idEscuela`),
   UNIQUE KEY `idEscuela_UNIQUE` (`idEscuela`),
   UNIQUE KEY `codigoEscuela_UNIQUE` (`codigoEscuela`),
@@ -35,8 +35,8 @@ CREATE TABLE `escuela` (
 
 CREATE TABLE `curso` (
   `idCurso` int NOT NULL AUTO_INCREMENT,
-  `nombreEscuela` varchar(50) NOT NULL,
-  `nombreCurso` varchar(50) NOT NULL,
+  `nombreEscuela` varchar(100) NOT NULL,
+  `nombreCurso` varchar(100) NOT NULL,
   `codigoEscuela` varchar(2) NOT NULL,
   `codigoCurso` varchar(6) NOT NULL,
   `creditos` int NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `curso` (
 
 CREATE TABLE `correquisito` (
   `idCorrequisito` int NOT NULL AUTO_INCREMENT,
-  `nombreEscuela` varchar(50) NOT NULL,
+  `nombreEscuela` varchar(100) NOT NULL,
   `codigoCurso` varchar(6) NOT NULL,
   `codCorrequisito` varchar(6) NOT NULL,
   PRIMARY KEY (`idCorrequisito`),
@@ -61,7 +61,7 @@ CREATE TABLE `correquisito` (
 
 CREATE TABLE `requisito` (
   `idRequisito` int NOT NULL AUTO_INCREMENT,
-  `nombreEscuela` varchar(50) NOT NULL,
+  `nombreEscuela` varchar(100) NOT NULL,
   `codigoCurso` varchar(6) NOT NULL,
   `codRequisito` varchar(6) NOT NULL,
   PRIMARY KEY (`idRequisito`),
@@ -81,7 +81,7 @@ CREATE TABLE `bloque` (
 
 CREATE TABLE `planEstudios` (
   `codigoPlan` int NOT NULL,
-  `nombreEscuela` varchar(50) NOT NULL,
+  `nombreEscuela` varchar(100) NOT NULL,
   `fechaVigencia` datetime NOT NULL,
   `codigoCurso` varchar(6) NOT NULL,
   `detalleBloque` varchar(25) NOT NULL,
@@ -112,5 +112,5 @@ INSERT INTO bloque VALUES (2, 'Semestre 2');
 INSERT INTO bloque VALUES (3, 'Verano');
 
 -- SELECT * FROM bloque;
--- SELECT * FROM usuario;
--- SELECT * FROM escuela;
+SELECT * FROM usuario;
+SELECT * FROM escuela;
