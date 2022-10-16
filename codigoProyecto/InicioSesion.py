@@ -346,19 +346,49 @@ def registrarEscuela():
         botonLC.pack()
         botonLC.place(x=340, y=400, width=200)
 
-        
+        def checkCodigo(codigo):
+            codigo = codigoEntry.get().strip()
+            var = [(codigo)]
+            select_query = "SELECT codigoEscuela FROM escuela WHERE codigoEscuela = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            if user is not None:
+                return True
+            else:
+                return False
+
+        def checkEscuela(escuela):
+            escuela = nombreEntry.get().strip()
+            var = [(escuela)]
+            select_query = "SELECT nombreEscuela FROM escuela WHERE nombreEscuela = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            if user is not None:
+                return True
+            else:
+                return False
+
         def registroDatos():
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
-
-            if len(nombre) > 0 and len(codigo) == 2:
-                vals = (codigo, nombre)
-                insert_query = "INSERT INTO escuela(codigoEscuela, nombreEscuela) VALUES (%s, %s)"
-                c.execute(insert_query, vals)
-                connection.commit()
-                messagebox.showinfo('Registrado','La escuela ha sido registrada')
+            print(codigo)
+          
+            if nombre.isalpha() == True and codigo.isalpha() == True:
+                if len(nombre) > 0 and len(codigo) == 2:
+                    if checkCodigo(codigo) == False and checkEscuela(nombre) == False:
+                        vals = (codigo, nombre)
+                        insert_query = "INSERT INTO escuela(codigoEscuela, nombreEscuela) VALUES (%s, %s)"
+                        c.execute(insert_query, vals)
+                        connection.commit()
+                        messagebox.showinfo('Registrado','La escuela ha sido registrada')
+                    else:
+                        messagebox.showwarning('Error', 'La escuela o el código ya existe, elija otro')
+                else:
+                    messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\n O asignar un Código de 2 letras')
             else:
-                messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios')
+                messagebox.showwarning('Error', 'La escuela y el código deben ser LETRAS')
+            
+
             
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
