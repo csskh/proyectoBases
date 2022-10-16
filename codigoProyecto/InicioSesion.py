@@ -10,7 +10,7 @@ import mysql.connector
 
 #---Conexión con MySQL---#
 root = Tk()
-connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='atiDBPruebas$', database='datosProyecto')
+connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='Rs220802', database='datosProyecto')
 c = connection.cursor()
 
 w = 430
@@ -168,11 +168,22 @@ def irLogin():
 
 irLoginLabel.bind("<Button-1>", lambda page: irLogin())
 
-#---Función que valida sí ya existe un usuario---#
+#---Función que valida sí ya existe un usuario o un correo---#
 def checkUsuario(usuario):
     usuario = usuarioEntryPR.get().strip()
     vals = (usuario,)
     select_query = "SELECT idUsuario FROM usuario WHERE idUsuario = %s"
+    c.execute(select_query, vals)
+    user = c.fetchone()
+    if user is not None:
+        return True
+    else:
+        return False
+
+def checkEmail(email):
+    email = correoEntryPR.get().strip()
+    vals = (email,)
+    select_query = "SELECT emailUsuario FROM usuario WHERE emailUsuario = %s"
     c.execute(select_query, vals)
     user = c.fetchone()
     if user is not None:
@@ -187,19 +198,24 @@ def registrar():
     contra = contraEntryPR.get().strip()
     confirmar = confirmarEntryPR.get().strip()
     rol = rolEntryPR.get().strip()
+    emailVar = '@' in email
+    mailVar = '.' in email
 
     if len(usuario) > 0 and len(contra) > 0:
-        if checkUsuario(usuario) == False: 
-            if contra == confirmar:
-                vals = (usuario, email, contra, rol)
-                insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-                c.execute(insert_query, vals)
-                connection.commit()
-                messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        if emailVar == True and mailVar == True:
+            if checkUsuario(usuario) == False and checkEmail(email) == False: 
+                if contra == confirmar:
+                    vals = (usuario, email, contra, rol)
+                    insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
+                    c.execute(insert_query, vals)
+                    connection.commit()
+                    messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+                else:
+                    messagebox.showwarning('Contraseña','Las contraseñas no coinciden')
             else:
-                messagebox.showwarning('Contraseña','Las contraseñas no coinciden')
+                messagebox.showwarning('Usuario o Correo No Válido','El nombre de usuario o el correo ya existe, elija otro')
         else:
-            messagebox.showwarning('Usuario No Válido','El nombre de usuario ya existe, elija otro')
+            messagebox.showwarning('Correo No Válido','Ingrese un correo que contenga @ y .')
     else:
         messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios')
 
@@ -344,7 +360,6 @@ def registrarEscuela():
         botonLC = tk.Button(root, text='Limpiar Campos', borderwidth=1, relief='raised', command=limpiarCampos)
         botonLC.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonLC.pack()
-<<<<<<< Updated upstream
         botonLC.place(x=340, y=400, width=200)
 
         def checkCodigo(codigo):
@@ -372,9 +387,9 @@ def registrarEscuela():
         def registroDatos():
             nombre = nombreEntry.get().strip()
             codigo = codigoEntry.get().strip()
-            print(codigo)
-          
-            if nombre.isalpha() == True and codigo.isalpha() == True:
+            nombreVar = nombre.replace(' ', '')
+
+            if nombreVar.isalpha() == True and codigo.isalpha() == True:
                 if len(nombre) > 0 and len(codigo) == 2:
                     if checkCodigo(codigo) == False and checkEscuela(nombre) == False:
                         vals = (codigo, nombre)
@@ -388,24 +403,7 @@ def registrarEscuela():
                     messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\n O asignar un Código de 2 letras')
             else:
                 messagebox.showwarning('Error', 'La escuela y el código deben ser LETRAS')
-            
 
-=======
-        botonLC.place(x=340, y=400, width=200)        
-        
-        def registroDatos():
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            if len(nombre) > 0 and len(codigo) == 2:
-                vals = (codigo, nombre)
-                insert_query = "INSERT INTO escuela(codigoEscuela, nombreEscuela) VALUES (%s, %s)"
-                c.execute(insert_query, vals)
-                connection.commit()
-                messagebox.showinfo('Registrado','La escuela ha sido registrada')
-            else:
-                messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios')
->>>>>>> Stashed changes
             
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
@@ -447,8 +445,15 @@ def registrarCurso():
 
         nombreEntry = tk.OptionMenu(root, opcionesVar, *opciones)
         nombreEntry.config(font=(fuente, 16, 'bold'))
-        nombreEntry.place(x=40, y=130, width=520, height=40)
+        nombreEntry.place(x=40, y=130, width=290, height=40)
 
+        codEscuela = tk.Label(root, text='Código Escuela:', fg=azul, font=(fuente, 20, 'bold'))
+        codEscuela.pack()
+        codEscuela.place(x=340, y=90)
+
+        codigoEscuela = tk.Entry(root, font = (fuente, 14))
+        codigoEscuela.place(x = 350, y = 130, width=210, height=40)
+        
         nombreCLabel = tk.Label(root, text='Nombre del Curso:', fg=azul, font=(fuente, 20, 'bold'))
         nombreCLabel.pack()
         nombreCLabel.place(x=40, y=180)
@@ -493,63 +498,59 @@ def registrarCurso():
         botonLC.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
         botonLC.pack()
         botonLC.place(x=350, y=480, width=200)
-<<<<<<< Updated upstream
 
-        '''
-        def registrar
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-        '''
-            
-=======
-        
-        def checkCurso(nombre, codigo):
-            nombre = nombreCEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-            vals = (nombre, codigo)
-            select_query = "SELECT nombreCurso, codigoEscuela FROM curso WHERE nombreCurso = %s and codigoEscuela = %s"
-            c.execute(select_query, vals)
-            curso = c.fetchone()
-            if curso is not None:
+        def checkCurso(nombreCurso):
+            nombreCurso = nombreCEntry.get().strip()
+            var = [(nombreCurso)]
+            select_query = "SELECT nombreCurso FROM curso WHERE nombreCurso = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            if user is not None:
                 return True
             else:
                 return False
+
+        def checkCodigo(codCurso):
+            codCurso = codigoEntry.get().strip()
+            var = [(codCurso)]
+            select_query = "SELECT codigoCurso FROM curso WHERE codigoCurso = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            if user is not None:
+                return True
+            else:
+                return False
+
         
         def registroCurso():
-            nombre = nombreCEntry.get().strip()
-            nombreE = opcionesVar.get().strip()
-            codigo = codigoEntry.get().strip()
+            nombreCurso = nombreCEntry.get().strip()
+            codEscuela = codigoEscuela.get().strip()
+            codCurso = codigoEntry.get().strip()
             creditos = creditosVar.get().strip()
             horas = horasVar.get().strip()
-
-            if len(nombre) > 0 and len(codigo) > 0:
-                if checkCurso(nombre, codigo) == False: 
-                    vals = (codigo, nombre, creditos, horas, nombreE)
-                    insert_query = "INSERT INTO curso(codigoCurso, nombreCurso, creditos, horas, nombreEscuela) VALUES (%s, %s, %s, %s, %s)"
-                    c.execute(insert_query, vals)
-                    connection.commit()
-                    messagebox.showinfo('Registrado','Su curso ha sido registrado')
+            codigo = codEscuela + codCurso
+            nombreVar = nombreCurso.replace(' ', '')
+            
+            if nombreVar.isalpha() == True and codEscuela.isalpha() == True:
+                if len(nombreCurso) > 0 and len(codCurso) == 4 and codCurso.isalpha() == False:
+                    if checkCurso(nombreCurso) == False and checkCodigo(codCurso) == False:
+                        vals = (nombreCurso, codEscuela, codEscuela, codigo, creditos, horas)
+                        insert_query = "INSERT INTO curso SET nombreCurso = %s, nombreEscuela = (select nombreEscuela from escuela where codigoEscuela = %s), codigoEscuela = %s, codigoCurso = %s, creditos = %s, horas = %s"
+                        c.execute(insert_query, vals)
+                        connection.commit()
+                        messagebox.showinfo('Registrado','El curso ha sido registrado')
+                    else:
+                        messagebox.showwarning('Error', 'El curso o el código ya existe, elija otro')
                 else:
-                    messagebox.showwarning('Curso No Válido','El nombre y codigo del curso ya existe, elija otro')
+                    messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\n O asignar un Código de 4 numeros')
             else:
-                messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios')
+                messagebox.showwarning('Error', 'El nombre del curso y el código de la escuela deben ser LETRAS')
 
->>>>>>> Stashed changes
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
         botonR.pack()
         botonR.place(x=40, y=480, width=300)
-<<<<<<< Updated upstream
-=======
         botonR['command']=registroCurso
-        
->>>>>>> Stashed changes
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -747,7 +748,7 @@ def registrarPE():
 def consultarPlan():
     if rol == '2':
        root = tk.Toplevel()
-       w = 600
+       w = 1000
        h = 600
        ws = root.winfo_screenwidth()
        hs = root.winfo_screenheight()
@@ -760,35 +761,32 @@ def consultarPlan():
 
        labelFrame = tk.Label(headerFrame, text='Consultar Plan de Estudio', bg=azul, fg=fgcolor, font=(fuente, 24))
        labelFrame.pack()
-       labelFrame.place(x=20, y=15)
+       labelFrame.place(x=320, y=15)
 
        escuelaLabel = tk.Label(root, text='Escuela propietaria del plan:', fg=azul, font=(fuente, 20, 'bold'))
        escuelaLabel.pack()
-       escuelaLabel.place(x=60, y=160)
+       escuelaLabel.place(x=20, y=80)
 
        opciones = ['Escuela 1', 'Escuela 2', 'Escuela 3']
        opcionesVar = tk.StringVar()
 
        escuelaEntry = tk.OptionMenu(root, opcionesVar, *opciones)
        escuelaEntry.config(font=(fuente, 16, 'bold'))
-       escuelaEntry.place(x=40, y=130, width=520, height=40)
+       escuelaEntry.place(x=450, y=80, width=480, height=40)
 
        codigoLabel = tk.Label(root, text='Código Plan de Estudios:', fg=azul, font=(fuente, 20, 'bold'))
        codigoLabel.pack()
-       codigoLabel.place(x=60, y=280)
+       codigoLabel.place(x=20, y=150)
 
-       codigoEntry = StringVar()
-       codigoEntry = tk.Entry(root, font=(fuente,14))
-       codigoEntry.place(x=60, y=330, width=480, height=30)
+       codigoEntry = tk.Entry(root, font=(fuente,16))
+       codigoEntry.place(x=400, y=150, width=150, height=40)
 
-
-       vigenciaLabel = tk.label(root, text = 'Vigencia del plan de estudios', fg = azul, font = (fuente, 16, 'bold'))
+       vigenciaLabel = tk.Label(root, text = 'Vigencia:', fg = azul, font = (fuente, 20, 'bold'))
        vigenciaLabel.pack()
-       vigenciaLabel.place(x = 40, y = 260)
+       vigenciaLabel.place(x = 600, y = 150)
 
-       vigenciaEntry = StringVar()
        vigenciaEntry = tk.Entry(root, font=(fuente,14))
-       vigenciaEntry.place(x=320, y=260, width=180, height=30)
+       vigenciaEntry.place(x=765, y=150, width=160, height=40)
                  
        '''
        def consultarPlan
@@ -801,7 +799,7 @@ def consultarPlan():
        botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
        botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
        botonCPE.pack()
-       botonCPE.place(x=620, y=130, width=300)
+       botonCPE.place(x=620, y=400, width=300)
 
     else: 
          messagebox.showwarning('Error', 'Sólo el Consultor puede realizar esta función')
