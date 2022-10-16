@@ -701,15 +701,42 @@ def consultarPlan():
        vigenciaEntry.place(x=320, y=260, width=180, height=30)
                  
        '''
-       def consultarPlan
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
+       def consultarPE():
+        nombre = nombreEntry.get().strip()
+        codigo = codigoEntry.get().strip()
 
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+        if len(nombre) > 0 and len(codigo) > 0:
+            c.execute('SELECT * FROM planEstudios INNER JOIN curso ON planEstudios.idEscuela =  curso.codigoEscuela)
+            columns = ('codigoCurso', 'nombreCurso', 'idbloque', 'horas', 'creditos')
+
+            tree = ttk.Treeview(consultarPlan, columns = columns, show = 'headings')
+            tree.grid(row = 1, column = 0, sticky = 'ew', padx = 15, pady = 15)
+
+            tree.heading('codigoCurso', text = 'Código del curso')
+            tree.heading ('nombreCurso', text = 'Nombre del curso')
+            tree.heading ('idBloque', text = 'Bloque')
+            tree.heading ('horas', text = 'Horas de clase')
+            tree.heading('creditos', text = 'Créditos')
+
+            #Se crea lista para insertar la info obtenida de la consulta
+
+            planEstudios = []
+
+            forn n in cursor:
+                planEstudios.append((n.codigoCurso, n.nombreCurso, n.idBloque, n.horas, n.creditos))
+
+            for curso in planEstudios:
+                tree.insert('', tk.END, values = curso)
+
+             scrollbar = ttk.Scrollbar(consultarPlan, orient=tk.VERTICAL, command=tree.yview)
+             tree.configure(yscroll=scrollbar.set)
+             scrollbar.grid(row=1, column=1, sticky='ns', padx = 10, pady= 10)
+
+
+            
+        else:
+            mb.showwarning("No existe plan de estudios")
+           
         '''
 
 
@@ -762,15 +789,7 @@ def consultarCurso():
                    
        '''
         def consultarCurso
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-       '''
+           '''
 
 
 
@@ -817,14 +836,7 @@ def consultarReq():
                           
        '''
         def consultarReq
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+          
      
        '''
        botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
@@ -869,14 +881,7 @@ def consultarCo():
                           
        '''
         def consultarCo
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
+            
      
       
        '''
