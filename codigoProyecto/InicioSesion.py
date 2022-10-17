@@ -621,17 +621,52 @@ def asignarRC():
         codCEntry.config(font=(fuente, 16, 'bold'))
         codCEntry.place(x=340, y=400, width=240, height=40)
 
-        '''
-        def registrarRequisito
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
+               ''' 
 
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-        '''
+         def checkRequisito(codigoCurso):
+            codigoCurso = codReqEntry.get().strip()
+            var = [(codigoCurso)]
+            select_query = "SELECT codigoCurso FROM requisito WHERE codigoCurso = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            if user is not None:
+                return True
+            else:
+                return False
+
+
+
+
+
+          def asignarRequisito(): 
+            
+            codigo = codigo.get().strip()
+            codigoCurso = codReq.get().strip()
+            nombreEscuela = nombre.get().strip()
+
+
+            if codigo.isalnum() == True and codigoCurso.isalnum() == True:
+
+                if checkRequisito(codigoCurso) == False:
+                        vals = (nombreEscuela, codigo, codigoCurso)
+
+                        insert_query = "INSERT INTO requisito nombreEscuela = (SELECT nombreEscuela FROM curso WHERE codigoEscuela = %s), codigo = (SELECT codigoCurso FROM curso WHERE codigoCurso=%s),
+                        codigoCurso = %s"
+
+                        c.execute(insert_query, vals)
+                        connection.commit()
+                        
+                        messagebox.showinfo('Registrado','El requisito ha sido registrado')
+
+                    else:
+                        messagebox.showwarning('Error', 'El requisito elegido ya existe')
+                else:
+                    messagebox.showwarning('Espacios vacíos, favor revisar')
+            else:
+                messagebox.showwarning('Error', 'Los códigos deben ser de carácter alfanumérico')
+
+'''
+
             
         botonRR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonRR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
