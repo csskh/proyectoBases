@@ -390,22 +390,25 @@ def registrarEscuela():
             codigo = codigoEntry.get().strip()
             nombreVar = nombre.replace(' ', '')
 
-            if nombreVar.isalpha() == True and codigo.isalpha() == True:
-                if len(nombre) > 0 and len(codigo) == 2:
-                    if checkCodigo(codigo) == False and checkEscuela(nombre) == False:
-                        vals = (codigo.upper(), nombre)
-                        insert_query = "INSERT INTO escuela(codigoEscuela, nombreEscuela) VALUES (%s, %s)"
-                        c.execute(insert_query, vals)
-                        connection.commit()
-                        messagebox.showinfo('Registrado','La escuela ha sido registrada')
+            if nombreVar != '' and codigo != '': 
+                if nombreVar.isalpha() == True and codigo.isalpha() == True:
+                    if len(nombre) > 0 and len(codigo) == 2:
+                        if checkCodigo(codigo) == False and checkEscuela(nombre) == False:
+                            vals = (codigo.upper(), nombre)
+                            insert_query = "INSERT INTO escuela(codigoEscuela, nombreEscuela) VALUES (%s, %s)"
+                            c.execute(insert_query, vals)
+                            connection.commit()
+                            messagebox.showinfo('Registrado','La escuela ha sido registrada')
+                            root.destroy()
+                        else:
+                            messagebox.showwarning('Error', 'La escuela o el código ya existe, elija otro')
                     else:
-                        messagebox.showwarning('Error', 'La escuela o el código ya existe, elija otro')
+                        messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\nO asignar un Código de 2 letras')
                 else:
-                    messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\n O asignar un Código de 2 letras')
+                    messagebox.showwarning('Error', 'La escuela y el código deben ser LETRAS')
             else:
-                messagebox.showwarning('Error', 'La escuela y el código deben ser LETRAS')
-
-            
+                    messagebox.showwarning('Error', 'Debe llenar todos los espacios')
+             
         botonR = tk.Button(ventana, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
         botonR.pack()
@@ -522,7 +525,7 @@ def registrarCurso():
                 return True
             else:
                 return False
-
+#no valida si se coloca el mismo codigo de la escuela que ya esta registrada 
         def registroCurso():
             nombreCurso = nombreCEntry.get().strip()
             codEscuela = codigoEscuela.get().strip()
@@ -532,20 +535,23 @@ def registrarCurso():
             codigo = codEscuela.upper() + codCurso
             nombreVar = nombreCurso.replace(' ', '')
             
-            if nombreVar.isalpha() == True and codEscuela.isalpha() == True:
-                if len(nombreCurso) > 0 and len(codCurso) == 4 and codCurso.isalpha() == False:
-                    if checkCurso(nombreCurso) == False and checkCodigo(codCurso) == False:
-                        vals = (nombreCurso, codEscuela.upper(), codEscuela.upper(), codigo, creditos, horas)
-                        insert_query = "INSERT INTO curso SET nombreCurso = %s, nombreEscuela = (select nombreEscuela from escuela where codigoEscuela = %s), codigoEscuela = %s, codigoCurso = %s, creditos = %s, horas = %s"
-                        c.execute(insert_query, vals)
-                        connection.commit()
-                        messagebox.showinfo('Registrado','El curso ha sido registrado')
+            if nombreVar != '' and codEscuela != '' and codCurso != '' and creditos != '' and horas != '':
+                if nombreVar.isalpha() == True and codEscuela.isalpha() == True:
+                    if len(nombreCurso) > 0 and len(codCurso) == 4 and codCurso.isalpha() == False:
+                        if checkCurso(nombreCurso) == False and checkCodigo(codCurso) == False:
+                            vals = (nombreCurso, codEscuela.upper(), codEscuela.upper(), codigo, creditos, horas)
+                            insert_query = "INSERT INTO curso SET nombreCurso = %s, nombreEscuela = (select nombreEscuela from escuela where codigoEscuela = %s), codigoEscuela = %s, codigoCurso = %s, creditos = %s, horas = %s"
+                            c.execute(insert_query, vals)
+                            connection.commit()
+                            messagebox.showinfo('Registrado','El curso ha sido registrado')
+                        else:
+                            messagebox.showwarning('Error', 'El curso o el código ya existe, elija otro')
                     else:
-                        messagebox.showwarning('Error', 'El curso o el código ya existe, elija otro')
+                        messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\nO asignar un Código de 4 números')
                 else:
-                    messagebox.showwarning('Espacios vacíos','Por favor llenar todos los espacios\n O asignar un Código de 4 numeros')
+                    messagebox.showwarning('Error', 'El nombre del curso y el código de la escuela deben ser LETRAS')
             else:
-                messagebox.showwarning('Error', 'El nombre del curso y el código de la escuela deben ser LETRAS')
+                messagebox.showwarning('Error', 'Debe llenar todos los espacios')
 
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
@@ -555,7 +561,7 @@ def registrarCurso():
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
-
+#no valida que el curso pertenezca a la escuela o que ya anteriormente exista
 def asignarRC():
     if rol == '1':
         root = tk.Toplevel()
@@ -609,7 +615,6 @@ def asignarRC():
         varR = c.fetchall()
         opcionesR = varR
         opcionesVarR = tk.StringVar()
-
 
         codREntry = tk.OptionMenu(root, opcionesVarR, *opcionesR)
         codREntry.config(font=(fuente, 16, 'bold'))
@@ -666,20 +671,23 @@ def asignarRC():
             asignarReq = codRequisito[2:-3]
             var = asignarReq 
             
-            if len(codCurso) == 6:
-                if codCurso != var:
-                    if checkRequisito(codCurso, codRequisito) == False:
-                        vals = (escuela, codCurso, asignarReq)
-                        insert_query = "INSERT INTO requisito SET nombreEscuela = %s, codigoCurso = %s, codRequisito = %s"
-                        c.execute(insert_query, vals)
-                        connection.commit()
-                        messagebox.showinfo('Registrado','El requisito ha sido registrado')
+            if escuela != '' and codCurso != '':
+                if len(codCurso) == 6:
+                    if codCurso != var:
+                        if checkRequisito(codCurso, codRequisito) == False:
+                            vals = (escuela, codCurso, asignarReq)
+                            insert_query = "INSERT INTO requisito SET nombreEscuela = %s, codigoCurso = %s, codRequisito = %s"
+                            c.execute(insert_query, vals)
+                            connection.commit()
+                            messagebox.showinfo('Registrado','El requisito ha sido registrado')
+                        else:
+                            messagebox.showwarning('Error', 'El requisito ya existe, elija otro')
                     else:
-                        messagebox.showwarning('Error', 'El requisito ya existe, elija otro')
+                        messagebox.showwarning('Error', 'El requisito debe ser diferente al código del curso')
                 else:
-                    messagebox.showwarning('Error', 'El requisito debe ser diferente al código del curso')
+                    messagebox.showwarning('Error', 'El codigo debe ser de longitud 6')
             else:
-                messagebox.showwarning('Error', 'El codigo debe ser de longitud 6')
+                 messagebox.showwarning('Error', 'Debe indicar una escuela y un código para \nregistrar un requisito o un correquisito 6')
 
             
         botonRR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
@@ -720,20 +728,24 @@ def asignarRC():
             asignarCorreq = codCorrequisito[2:-3]
             var = asignarCorreq
 
-            if len(codCurso) == 6:
-                if codCurso != var:
-                    if checkCorrequisito(codCurso, codCorrequisito) == False:
-                        vals = (escuela, codCurso, asignarCorreq)
-                        insert_query = "INSERT INTO correquisito SET nombreEscuela = %s, codigoCurso = %s, codCorrequisito = %s"
-                        c.execute(insert_query, vals)
-                        connection.commit()
-                        messagebox.showinfo('Registrado','El correquisito ha sido registrado')
+            if escuela != '' and codCurso != '':
+                if len(codCurso) == 6:
+                    if codCurso != var:
+                        if checkCorrequisito(codCurso, codCorrequisito) == False:
+                            vals = (escuela, codCurso, asignarCorreq)
+                            insert_query = "INSERT INTO correquisito SET nombreEscuela = %s, codigoCurso = %s, codCorrequisito = %s"
+                            c.execute(insert_query, vals)
+                            connection.commit()
+                            messagebox.showinfo('Registrado','El correquisito ha sido registrado')
+                        else:
+                            messagebox.showwarning('Error', 'El correquisito ya existe, elija otro')
                     else:
-                        messagebox.showwarning('Error', 'El correquisito ya existe, elija otro')
+                        messagebox.showwarning('Error', 'El correquisito debe ser diferente al código del curso')
                 else:
-                    messagebox.showwarning('Error', 'El correquisito debe ser diferente al código del curso')
+                    messagebox.showwarning('Error', 'El codigo debe ser de longitud 6')
             else:
-                messagebox.showwarning('Error', 'El codigo debe ser de longitud 6')
+                 messagebox.showwarning('Error', 'Debe indicar una escuela y un código para \nregistrar un requisito o un correquisito 6')
+
 
         botonRC = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonRC.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
