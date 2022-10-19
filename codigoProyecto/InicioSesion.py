@@ -633,6 +633,7 @@ def asignarRC():
         codCEntry.config(font=(fuente, 16, 'bold'))
         codCEntry.place(x=340, y=400, width=240, height=40)
 
+
         def checkRequisito(codCurso, codRequisito):
             codCurso = codigoEntry.get().strip()
             codRequisito = opcionesVarR.get().strip()
@@ -807,19 +808,6 @@ def registrarPE():
         bloqueEntry = tk.OptionMenu(root, bloqueVar, *bloque)
         bloqueEntry.config(font=(fuente, 20, 'bold'))
         bloqueEntry.place(x=320, y=390, width=240, height=40)
-
-
-        '''
-        def registrar
-            nombre = nombreEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-
-            vals = (usuario, email, contra, rol)
-            insert_query = "INSERT INTO usuario(idUsuario, emailUsuario, contrasena, idRol) VALUES (%s, %s, %s, %s)"
-            c.execute(insert_query, vals)
-            connection.commit()
-            messagebox.showinfo('Registrado','Su usuario ha sido registrado')
-        '''
             
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
