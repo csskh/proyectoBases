@@ -525,6 +525,9 @@ def registrarCurso():
                 return True
             else:
                 return False
+
+        def checkCodEscuela(nombreCurso, codEscuela):
+            pass
 #no valida si se coloca el mismo codigo de la escuela que ya esta registrada 
         def registroCurso():
             nombreCurso = nombreCEntry.get().strip()
@@ -1002,16 +1005,26 @@ def consultarPlan():
 
        vigenciaEntry = tk.Entry(root, font=(fuente,14))
        vigenciaEntry.place(x=765, y=150, width=160, height=40)
-                 
-       '''
-       def consultarPlan
-           
-        '''
+       tree = ttk.Treeview(root, columns=('Prueba', 'Prueba2'))
+       tree.pack()
+       tree.place(x=20, y=200)
+       tree.insert('', END, text='Ale', values=('10', '15'))
+       tree.insert('', END, text='Iris', values=('45', '78'))
+       tree.heading('#0', text='Nombre')
+       tree.heading('Prueba', text='Precio')
+       tree.heading('Prueba2', text='Cant')
 
+       scrollbar = ttk.Scrollbar(tree, orient=tk.VERTICAL, command=tree.yview)
+       tree.configure(yscroll=scrollbar.set)
+                 
+       def consultaPE():
+        pass
+           
        botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
        botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
        botonCPE.pack()
        botonCPE.place(x=620, y=400, width=300)
+       botonCPE['command']=consultaPE
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
