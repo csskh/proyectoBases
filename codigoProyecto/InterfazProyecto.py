@@ -6,11 +6,13 @@ from tkinter import ttk
 from tkinter.ttk import *
 from tkinter import filedialog
 from tkinter import messagebox
+from turtle import width
 import mysql.connector
 
 #---Conexión con MySQL---#
 root = Tk()
-connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='Rs220802', database='datosProyecto')
+base = 'datosProyectoProgramado'
+connection = mysql.connector.connect(host='localhost', user='root', port='3306', password='Rs220802', database=base)
 c = connection.cursor()
 
 w = 430
@@ -488,7 +490,7 @@ def registrarCurso():
         horasLabel.pack()
         horasLabel.place(x=40, y=400)
 
-        horas = [1,2,3,4,5]
+        horas = [1,2,3,4,5,6,7,8,9]
         horasVar = StringVar()
 
         horasEntry = tk.OptionMenu(root, horasVar, *horas)
@@ -526,9 +528,6 @@ def registrarCurso():
             else:
                 return False
 
-        def checkCodEscuela(nombreCurso, codEscuela):
-            pass
-#no valida si se coloca el mismo codigo de la escuela que ya esta registrada 
         def registroCurso():
             nombreCurso = nombreCEntry.get().strip()
             codEscuela = codigoEscuela.get().strip()
@@ -564,7 +563,7 @@ def registrarCurso():
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
-#no valida que el curso pertenezca a la escuela o que ya anteriormente exista
+
 def asignarRC():
     if rol == '1':
         root = tk.Toplevel()
@@ -759,7 +758,6 @@ def asignarRC():
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
 
-
 def registrarPE():
     if rol == '1':
         root = tk.Toplevel()
@@ -783,8 +781,12 @@ def registrarPE():
         nombreLabel.pack()
         nombreLabel.place(x=40, y=90)
 
-        escuela = [1,2]
-        escuelaVar = StringVar()
+        escuela = 'select nombreEscuela from escuela'
+        c.execute(escuela)
+        varE = c.fetchall()
+
+        escuela = varE
+        escuelaVar = tk.StringVar()
 
         escuelaEntry = tk.OptionMenu(root, escuelaVar, *escuela)
         escuelaEntry.config(font=(fuente, 16, 'bold'))
@@ -816,18 +818,72 @@ def registrarPE():
         bloqueLabel = tk.Label(root, text='Bloque:', fg=azul, font=(fuente, 18, 'bold'))
         bloqueLabel.pack()
         bloqueLabel.place(x=40, y=390)
-       
-        bloque = ['1 Semestre', '2 Semestre', 'Verano']
-        bloqueVar = StringVar
+
+        bloque = 'select detalleBloque from bloque'
+        c.execute(bloque)
+        varB = c.fetchall()
+        bloque = varB
+        bloqueVar = StringVar()
 
         bloqueEntry = tk.OptionMenu(root, bloqueVar, *bloque)
         bloqueEntry.config(font=(fuente, 20, 'bold'))
         bloqueEntry.place(x=320, y=390, width=240, height=40)
+
+        def checkCodPlan(codPlan):
+            codPlan = codigoEntry.get().strip()
+            var = [(codPlan)]
+            select_query = "SELECT codigoPlan FROM planEstudios WHERE codigoPlan = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            if user is not None:
+                return True
+            else:
+                return False
+
+        def checkCodCurso(codCurso):
+            codCurso = codigoCursoEntry.get().strip()
+            var = [(codCurso)]
+            select_query = "SELECT codigoCurso FROM curso WHERE codigoCurso = %s"
+            c.execute(select_query, var)
+            user = c.fetchone()
+            x = 0
+            if user is None:
+                return True
+            else:
+                return False
             
+
+        def registroPlan():
+            nombreEscuela = escuelaVar.get().strip()
+            codPlan = codigoEntry.get().strip()
+            vigencia = vigenciaEntry.get().strip()
+            codCurso = codigoCursoEntry.get().strip()
+            bloque = bloqueVar.get().strip()
+            escuela = nombreEscuela[2:-3]
+            bloqueV = bloque[2:-3]
+            nombreVar = escuela.replace(' ', '')
+            
+            if nombreVar != '' and codPlan != '' and vigencia != '' and codCurso != '' and bloque != '':
+                if len(codCurso) == 6:
+                    if checkCodPlan(codPlan) == False and checkCodCurso(codCurso) == False:
+                        vals = (codPlan, escuela, vigencia, codCurso, bloqueV)
+                        insert_query = "INSERT INTO planEstudios SET codigoPlan = %s, nombreEscuela = %s, fechaVigencia = %s, codigoCurso = %s, detalleBloque = (select detalleBloque from bloque where detalleBloque = %s)"
+                        c.execute(insert_query, vals)
+                        connection.commit()
+                        messagebox.showinfo('Registrado','El plan de estudio ha sido registrado')
+                    else:
+                        messagebox.showwarning('Error', 'El plan de estudio ya existe, elija otro')
+                else:
+                    messagebox.showwarning('Error', 'El codigo debe ser de longitud 6')
+            else:
+                messagebox.showwarning('Error', 'Debe llenar todos los espacios')
+            
+
         botonR = tk.Button(root, text='REGISTRAR', borderwidth=1, relief='raised')
         botonR.config(bg=azul, font='Cambria 18 bold', fg= fgcolor)
         botonR.pack()
         botonR.place(x=150, y=500, width=300)
+        botonR['command']=registroPlan
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -964,67 +1020,79 @@ def eliminarCurso():
 
 def consultarPlan():
     if rol == '2':
-       root = tk.Toplevel()
-       root.title('Consultar Plan Estudio')
-       w = 1000
-       h = 600
-       ws = root.winfo_screenwidth()
-       hs = root.winfo_screenheight()
-       x = (ws-w)/2
-       y = (hs-h)/2
-       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
-       root.resizable(0,0)
-       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
-       headerFrame.pack()
+        root = tk.Toplevel()
+        root.title('Consultar Plan Estudio')
+        w = 1000
+        h = 600
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
 
-       labelFrame = tk.Label(headerFrame, text='Consultar Plan de Estudio', bg=azul, fg=fgcolor, font=(fuente, 24))
-       labelFrame.pack()
-       labelFrame.place(x=320, y=15)
+        labelFrame = tk.Label(headerFrame, text='Consultar Plan de Estudio', bg=azul, fg=fgcolor, font=(fuente, 24))
+        labelFrame.pack()
+        labelFrame.place(x=320, y=15)
 
-       escuelaLabel = tk.Label(root, text='Escuela propietaria del plan:', fg=azul, font=(fuente, 20, 'bold'))
-       escuelaLabel.pack()
-       escuelaLabel.place(x=20, y=80)
+        escuelaLabel = tk.Label(root, text='Escuela propietaria del plan:', fg=azul, font=(fuente, 20, 'bold'))
+        escuelaLabel.pack()
+        escuelaLabel.place(x=20, y=80)
 
-       opciones = ['Escuela 1', 'Escuela 2', 'Escuela 3']
-       opcionesVar = tk.StringVar()
+        escuela = 'select nombreEscuela from escuela'
+        c.execute(escuela)
+        varE = c.fetchall()
 
-       escuelaEntry = tk.OptionMenu(root, opcionesVar, *opciones)
-       escuelaEntry.config(font=(fuente, 16, 'bold'))
-       escuelaEntry.place(x=450, y=80, width=480, height=40)
+        opciones = varE
+        opcionesVar = tk.StringVar()
 
-       codigoLabel = tk.Label(root, text='Código Plan de Estudios:', fg=azul, font=(fuente, 20, 'bold'))
-       codigoLabel.pack()
-       codigoLabel.place(x=20, y=150)
+        escuelaEntry = tk.OptionMenu(root, opcionesVar, *opciones)
+        escuelaEntry.config(font=(fuente, 16, 'bold'))
+        escuelaEntry.place(x=450, y=80, width=480, height=40)
 
-       codigoEntry = tk.Entry(root, font=(fuente,16))
-       codigoEntry.place(x=400, y=150, width=150, height=40)
+        codigoLabel = tk.Label(root, text='Código Plan de Estudios:', fg=azul, font=(fuente, 20, 'bold'))
+        codigoLabel.pack()
+        codigoLabel.place(x=20, y=150)
 
-       vigenciaLabel = tk.Label(root, text = 'Vigencia:', fg = azul, font = (fuente, 20, 'bold'))
-       vigenciaLabel.pack()
-       vigenciaLabel.place(x = 600, y = 150)
+        codigoEntry = tk.Entry(root, font=(fuente,16))
+        codigoEntry.place(x=400, y=150, width=150, height=40)
 
-       vigenciaEntry = tk.Entry(root, font=(fuente,14))
-       vigenciaEntry.place(x=765, y=150, width=160, height=40)
-       tree = ttk.Treeview(root, columns=('Prueba', 'Prueba2'))
-       tree.pack()
-       tree.place(x=20, y=200)
-       tree.insert('', END, text='Ale', values=('10', '15'))
-       tree.insert('', END, text='Iris', values=('45', '78'))
-       tree.heading('#0', text='Nombre')
-       tree.heading('Prueba', text='Precio')
-       tree.heading('Prueba2', text='Cant')
+        vigenciaLabel = tk.Label(root, text = 'Vigencia:', fg = azul, font = (fuente, 20, 'bold'))
+        vigenciaLabel.pack()
+        vigenciaLabel.place(x = 600, y = 150)
 
-       scrollbar = ttk.Scrollbar(tree, orient=tk.VERTICAL, command=tree.yview)
-       tree.configure(yscroll=scrollbar.set)
-                 
-       def consultaPE():
-        pass
+        vigenciaEntry = tk.Entry(root, font=(fuente,14))
+        vigenciaEntry.place(x=765, y=150, width=160, height=40)
+
+        
+        #buscar como cambiar el tamaño de las columnas 
+        tree = ttk.Treeview(root, columns=('Nombre', 'Fecha', 'Curso', 'Bloque'))
+        tree['show']='headings'
+        tree.pack()
+        tree.place(x=50, y=200, width=900, height=250)
+
+        tree.heading('#1', text='Nombre Escuela')
+        tree.heading('#2', text='Fecha Vigencia')
+        tree.heading('#3', text='Curso')
+        tree.heading('#4', text='Bloque')
+
+        def consultaPE():
+            codigo = codigoEntry.get().strip()
+            val = [(codigo)]
+            select_query = ('Select nombreEscuela, fechaVigencia, codigoCurso, detalleBloque from planEstudios where codigoPlan = %s')
+            c.execute(select_query, val)
+            user = c.fetchall()
+
+            for ro in user:
+                tree.insert('',END, text="",values=(ro[0],ro[1],ro[2],ro[3]))
            
-       botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-       botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-       botonCPE.pack()
-       botonCPE.place(x=620, y=400, width=300)
-       botonCPE['command']=consultaPE
+        botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+        botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+        botonCPE.pack()
+        botonCPE.place(x=300, y=500, width=300)
+        botonCPE['command']=consultaPE
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
@@ -1032,46 +1100,60 @@ def consultarPlan():
 
 def consultarCurso():
     if rol == '2':
-       root = tk.Toplevel()
-       root.title('Consultar Curso')
-       w = 600
-       h = 400
-       ws = root.winfo_screenwidth()
-       hs = root.winfo_screenheight()
-       x = (ws-w)/2
-       y = (hs-h)/2
-       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
-       root.resizable(0,0)
-       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
-       headerFrame.pack()
+        root = tk.Toplevel()
+        root.title('Consultar Curso')
+        w = 1000
+        h = 600
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
 
-       labelFrame = tk.Label(headerFrame, text='Consultar Curso', bg=azul, fg=fgcolor, font=(fuente, 30))
-       labelFrame.pack()
-       labelFrame.place(x=150, y=15)
+        labelFrame = tk.Label(headerFrame, text='Consultar Curso', bg=azul, fg=fgcolor, font=(fuente, 30))
+        labelFrame.pack()
+        labelFrame.place(x=350, y=10)
 
-       nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
-       nombreLabel.pack()
-       nombreLabel.place(x=20, y=100)
+        nombreLabel = tk.Label(root, text='Nombre:', fg=azul, font=(fuente, 20, 'bold'), justify='left')
+        nombreLabel.pack()
+        nombreLabel.place(x=40, y=100)
 
-       nombreEntry = tk.Entry(root, font=(fuente,14))
-       nombreEntry.place(x=300, y=100, width=280, height=30)
+        nombreEntry = tk.Entry(root, font=(fuente,14))
+        nombreEntry.place(x=180, y=106, width=280, height=30)
 
-       planLabel = tk.Label(root, text='Plan al que pertenece:', fg=azul, font=(fuente, 20, 'bold'))
-       planLabel.pack()
-       planLabel.place(x=20, y=200)
+        planLabel = tk.Label(root, text='Plan al que pertenece:', fg=azul, font=(fuente, 20, 'bold'))
+        planLabel.pack()
+        planLabel.place(x=500, y=100)
 
-       planEntry = tk.Entry(root, font=(fuente,14))
-       planEntry.place(x=350, y=202, width=230, height=30)
+        planEntry = tk.Entry(root, font=(fuente,14))
+        planEntry.place(x=840, y=106, width=106, height=30)
+        
+        tree = ttk.Treeview(root, columns=('Codigo','Requisitos','Correquisitos','Horas','Creditos'))
+        tree.pack()
+        tree.place(x=50, y=200, width=900, height=250)
 
-                   
-       '''
-        def consultarCurso
-           '''
+        tree.heading('#0', text='Código ')
+        tree.heading('#1', text='Nombre del curso')
+        tree.heading('#2', text='Bloque')
+        tree.heading('#3', text='Horas del curso')
+        tree.heading('#4', text='Creditos')
+        
+        '''        
+        def consCurso:
+            vigencia = vigenciaEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+            
+            tree.insert('', END, text='Ale', values=(vigencia, codigo))
+            tree.insert('', END, text='Iris', values=('45', '78'))'''
+            
 
-       botonCCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-       botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-       botonCCPE.pack()
-       botonCCPE.place(x=150, y=300, width=300)
+        botonCCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+        botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+        botonCCPE.pack()
+        botonCCPE.place(x=350, y=500, width=300)
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
@@ -1079,40 +1161,51 @@ def consultarCurso():
 
 def consultarReq():
     if rol == '2':
-       root = tk.Toplevel()
-       root.title('Consultar Requisitos')
-       w = 600
-       h = 400
-       ws = root.winfo_screenwidth()
-       hs = root.winfo_screenheight()
-       x = (ws-w)/2
-       y = (hs-h)/2
-       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
-       root.resizable(0,0)
-       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
-       headerFrame.pack()
+        root = tk.Toplevel()
+        root.title('Consultar Requisitos')
+        w = 800
+        h = 500
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
 
-       labelFrame = tk.Label(headerFrame, text='Consultar Requisitos', bg=azul, fg=fgcolor, font=(fuente, 30))
-       labelFrame.pack()
-       labelFrame.place(x=120, y=15)
+        labelFrame = tk.Label(headerFrame, text='Consultar Requisito', bg=azul, fg=fgcolor, font=(fuente, 30))
+        labelFrame.pack()
+        labelFrame.place(x=220, y=10)
 
-       nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
-       nombreLabel.pack()
-       nombreLabel.place(x=20, y=140)
+        nombreLabel = tk.Label(root, text='Curso:', fg=azul, font=(fuente, 20, 'bold'), justify='left')
+        nombreLabel.pack()
+        nombreLabel.place(x=40, y=100)
 
-       nombreEntry = tk.Entry(root, font=(fuente,14))
-       nombreEntry.place(x=300, y=140, width=280, height=40)
-                          
-       '''
-        def consultarReq
-          
-     
-       '''
+        nombreEntry = tk.Entry(root, font=(fuente,14))
+        nombreEntry.place(x=180, y=106, width=280, height=30)
+        
+        tree = ttk.Treeview(root, columns=('Curso','Codigo','Requisitos'))
+        tree.pack()
+        tree.place(x=50, y=200, width=700, height=250)
 
-       botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-       botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-       botonCR.pack()
-       botonCR.place(x=150, y=280, width=300)
+        tree.heading('#0', text='Nombre del curso')
+        tree.heading('#1', text='Código Requisito')
+        tree.heading('#2', text='Requisitos')
+        
+        '''        
+        def consCurso:
+            vigencia = vigenciaEntry.get().strip()
+            codigo = codigoEntry.get().strip()
+            
+            tree.insert('', END, text='Ale', values=(vigencia, codigo))
+            tree.insert('', END, text='Iris', values=('45', '78'))'''
+
+
+        botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+        botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+        botonCR.pack()
+        botonCR.place(x=550, y=102, width=200)
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
@@ -1120,41 +1213,51 @@ def consultarReq():
 
 def consultarCo():
      if rol == '2':
-       root = tk.Toplevel()
-       root.title('Consultar Correquisitos')
-       w = 600
-       h = 400
-       ws = root.winfo_screenwidth()
-       hs = root.winfo_screenheight()
-       x = (ws-w)/2
-       y = (hs-h)/2
-       root.geometry("%dx%d+%d+%d" % (w, h, x, y))
-       root.resizable(0,0)
-       headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
-       headerFrame.pack()
+        root = tk.Toplevel()
+        root.title('Consultar Correquisitos')
+        w = 800
+        h = 500
+        ws = root.winfo_screenwidth()
+        hs = root.winfo_screenheight()
+        x = (ws-w)/2
+        y = (hs-h)/2
+        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        root.resizable(0,0)
+        headerFrame = tk.Frame(root, bg='#001b2e', width=w, height=70)
+        headerFrame.pack()
 
-       labelFrame = tk.Label(headerFrame, text='Consultar Correquisitos', bg=azul, fg=fgcolor, font=(fuente, 30))
-       labelFrame.pack()
-       labelFrame.place(x=20, y=15)
+        labelFrame = tk.Label(headerFrame, text='Consultar Correquisitos', bg=azul, fg=fgcolor, font=(fuente, 30))
+        labelFrame.pack()
+        labelFrame.place(x=200, y=15)
 
-       nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
-       nombreLabel.pack()
-       nombreLabel.place(x=20, y=140)
+        nombreLabel = tk.Label(root, text='Curso:', fg=azul, font=(fuente, 20, 'bold'), justify='left')
+        nombreLabel.pack()
+        nombreLabel.place(x=40, y=100)
 
-       nombreEntry = tk.Entry(root, font=(fuente,14))
-       nombreEntry.place(x=300, y=140, width=280, height=40)
-                          
-       '''
-        def consultarCo
+        nombreEntry = tk.Entry(root, font=(fuente,14))
+        nombreEntry.place(x=180, y=106, width=280, height=30)
+        
+        tree = ttk.Treeview(root, columns=('Curso','Codigo','Correquisitos'))
+        tree.pack()
+        tree.place(x=50, y=200, width=700, height=250)
+
+        tree.heading('#0', text='Nombre del curso')
+        tree.heading('#1', text='Código Correquisito')
+        tree.heading('#2', text='Correquisitos')
+
+
+        '''
+        def consCurso:
+            vigencia = vigenciaEntry.get().strip()
+            codigo = codigoEntry.get().strip()
             
-     
-      
-       '''
+            tree.insert('', END, text='Ale', values=(vigencia, codigo))
+            tree.insert('', END, text='Iris', values=('45', '78'))'''
 
-       botonCCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
-       botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
-       botonCCR.pack()
-       botonCCR.place(x=150, y=280, width=300)
+        botonCCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
+        botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
+        botonCCR.pack()
+        botonCCR.place(x=150, y=280, width=300)
 
      else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
