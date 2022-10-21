@@ -301,7 +301,7 @@ def ventanaMenuOpciones(root):
     botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
     botonCCR.pack()
     botonCCR.place(x=620, y=340, width=300)
-    botonCCR['command']=consultarReq
+    botonCCR['command']=consultarCo
 
     botonER = tk.Button(root, text='Eliminar Requisito ', borderwidth=1, relief='raised')
     botonER.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
@@ -909,24 +909,40 @@ def eliminarReq():
         labelFrame.pack()
         labelFrame.place(x=160, y=15)
 
-        nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
+        nombreLabel = tk.Label(root, text='Código del curso:', fg=azul, font=(fuente, 20, 'bold'))
         nombreLabel.pack()
-        nombreLabel.place(x=20, y=140)
+        nombreLabel.place(x=20, y=120)
 
         nombreEntry = tk.Entry(root, font=(fuente,14))
-        nombreEntry.place(x=300, y=140, width=280, height=40)
+        nombreEntry.place(x=300, y=120, width=280, height=40)
 
-                            
-        '''
-            def consultarReq
+        reqLabel = tk.Label(root, text='Código Requisito:', fg=azul, font=(fuente, 20, 'bold'))
+        reqLabel.pack()
+        reqLabel.place(x=20, y=200)
+
+        reqEntry = tk.Entry(root, font=(fuente,14))
+        reqEntry.place(x=300, y=200, width=280, height=40)
+                 
+        def eliminarR():
+            nombre = nombreEntry.get().strip()
+            codigo = reqEntry.get().strip()
+            val = (codigo, nombre)
+            delete = ('Delete from requisito where codRequisito = %s and codigoCurso = %s')
+            if nombre != '' and codigo != '':
+                if len(nombre) == 6 and len(codigo) == 6:
+                    c.execute(delete, val)
+                    connection.commit()
+                    messagebox.showinfo('Eliminado','El requisito ha sido eliminado')
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 6 carácteres (Ej:TI3600) ')
+            else:
+                messagebox.showwarning('Error', 'Debe llenar todos los espacios')
             
-        
-        '''
-
         botonCR = tk.Button(root, text='ELIMINAR', borderwidth=1, relief='raised')
         botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCR.pack()
         botonCR.place(x=150, y=280, width=300)
+        botonCR['command']=eliminarR
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -951,23 +967,40 @@ def eliminarCo():
         labelFrame.pack()
         labelFrame.place(x=140, y=15)
 
-        nombreLabel = tk.Label(root, text='Nombre del curso:', fg=azul, font=(fuente, 20, 'bold'))
+        nombreLabel = tk.Label(root, text='Código del curso:', fg=azul, font=(fuente, 20, 'bold'))
         nombreLabel.pack()
-        nombreLabel.place(x=20, y=140)
+        nombreLabel.place(x=20, y=120)
 
         nombreEntry = tk.Entry(root, font=(fuente,14))
-        nombreEntry.place(x=300, y=140, width=280, height=40)
+        nombreEntry.place(x=300, y=120, width=280, height=40)
 
-        '''
-            def consultarReq
-            
-        
-        '''
+        reqLabel = tk.Label(root, text='Código Correquisito:', fg=azul, font=(fuente, 20, 'bold'))
+        reqLabel.pack()
+        reqLabel.place(x=20, y=200)
+
+        reqEntry = tk.Entry(root, font=(fuente,14))
+        reqEntry.place(x=300, y=200, width=280, height=40)
+
+        def eliminarC():
+            nombre = nombreEntry.get().strip()
+            codigo = reqEntry.get().strip()
+            val = (codigo, nombre)
+            delete = ('Delete from correquisito where codCorrequisito = %s and codigoCurso = %s')
+            if nombre != '' and codigo != '':
+                if len(nombre) == 6 and len(codigo) == 6:
+                    c.execute(delete, val)
+                    connection.commit()
+                    messagebox.showinfo('Eliminado','El correquisito ha sido eliminado')
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 6 carácteres (Ej:TI3600)')
+            else:
+                messagebox.showwarning('Error', 'Debe llenar todos los espacios')
 
         botonCR = tk.Button(root, text='ELIMINAR', borderwidth=1, relief='raised')
         botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCR.pack()
         botonCR.place(x=150, y=280, width=300)
+        botonCR['command']=eliminarC
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -998,20 +1031,25 @@ def eliminarCurso():
         nombreEntry = tk.Entry(root, font=(fuente,14))
         nombreEntry.place(x=300, y=140, width=280, height=40)
 
-        def limpiarCampos():
-                nombreEntry.delete(0, "end")
-
-                            
-        '''
-            def consultarReq
-            
-        
-        '''
+        def eliminarC():
+            nombre = nombreEntry.get().strip()
+            val = [(nombre)]
+            delete = ('Delete from curso where codigoCurso = %s')
+            if nombre != '':
+                if len(nombre) == 6 :
+                    c.execute(delete, val)
+                    connection.commit()
+                    messagebox.showinfo('Eliminado','El curso ha sido eliminado')
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 6 carácteres (Ej:TI3600)')
+            else:
+                messagebox.showwarning('Error', 'Debe llenar todos los espacios')
 
         botonCR = tk.Button(root, text='ELIMINAR', borderwidth=1, relief='raised')
         botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCR.pack()
         botonCR.place(x=150, y=280, width=300)
+        botonCR['command']=eliminarC
 
     else: 
         messagebox.showwarning('Error', 'Solo el Admin puede realizar esta función')
@@ -1066,8 +1104,7 @@ def consultarPlan():
         vigenciaEntry = tk.Entry(root, font=(fuente,14))
         vigenciaEntry.place(x=765, y=150, width=160, height=40)
 
-        
-        #buscar como cambiar el tamaño de las columnas 
+    
         tree = ttk.Treeview(root, columns=('Nombre', 'Fecha', 'Curso', 'Bloque'))
         tree['show']='headings'
         tree.pack()
@@ -1085,9 +1122,15 @@ def consultarPlan():
             c.execute(select_query, val)
             user = c.fetchall()
 
-            for ro in user:
-                tree.insert('',END, text="",values=(ro[0],ro[1],ro[2],ro[3]))
-           
+            if codigo != '':
+                if len(codigo) == 4:
+                    for ro in user:
+                        tree.insert('',END, text="",values=(ro[0],ro[1],ro[2],ro[3]))
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 4 carácteres')
+            else:
+                    messagebox.showwarning('Error', 'Debe llenar todos los espacios')
+
         botonCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
         botonCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCPE.pack()
@@ -1096,7 +1139,6 @@ def consultarPlan():
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
-
 
 def consultarCurso():
     if rol == '2':
@@ -1131,29 +1173,39 @@ def consultarCurso():
         planEntry = tk.Entry(root, font=(fuente,14))
         planEntry.place(x=840, y=106, width=106, height=30)
         
-        tree = ttk.Treeview(root, columns=('Codigo','Requisitos','Correquisitos','Horas','Creditos'))
+        tree = ttk.Treeview(root, columns=('escuela','curso','codE','codC','Creditos', 'Horas'))
+        tree['show']='headings'
         tree.pack()
         tree.place(x=50, y=200, width=900, height=250)
 
-        tree.heading('#0', text='Código ')
-        tree.heading('#1', text='Nombre del curso')
-        tree.heading('#2', text='Bloque')
-        tree.heading('#3', text='Horas del curso')
-        tree.heading('#4', text='Creditos')
+        tree.heading('#1', text='Escuela ')
+        tree.heading('#2', text='Nombre del curso')
+        tree.heading('#3', text='Codigo Escuela')
+        tree.heading('#4', text='Codigo Curso')
+        tree.heading('#5', text='Creditos')
+        tree.heading('#6', text='Horas')
         
-        '''        
-        def consCurso:
-            vigencia = vigenciaEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-            
-            tree.insert('', END, text='Ale', values=(vigencia, codigo))
-            tree.insert('', END, text='Iris', values=('45', '78'))'''
-            
+        def consultaCu():
+            codigo = nombreEntry.get().strip()
+            val = [(codigo)]
+            select_query = ('Select nombreEscuela, nombreCurso, codigoEscuela, codigoCurso, creditos, horas from curso where codigoCurso = %s')
+            c.execute(select_query, val)
+            user = c.fetchall()
+            if codigo != '':
+                if len(codigo) == 6:
+                    for ro in user:
+                        tree.insert('',END, text="",values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 6 carácteres (Ej:TI3600)')
+            else:
+                    messagebox.showwarning('Error', 'Debe llenar todos los espacios')
+
 
         botonCCPE = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
         botonCCPE.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCCPE.pack()
         botonCCPE.place(x=350, y=500, width=300)
+        botonCCPE['command']=consultaCu
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
@@ -1185,27 +1237,36 @@ def consultarReq():
         nombreEntry = tk.Entry(root, font=(fuente,14))
         nombreEntry.place(x=180, y=106, width=280, height=30)
         
-        tree = ttk.Treeview(root, columns=('Curso','Codigo','Requisitos'))
+        tree = ttk.Treeview(root, columns=('Escuela','Codigo','Correquisitos'))
+        tree['show']='headings'
         tree.pack()
         tree.place(x=50, y=200, width=700, height=250)
 
-        tree.heading('#0', text='Nombre del curso')
-        tree.heading('#1', text='Código Requisito')
-        tree.heading('#2', text='Requisitos')
-        
-        '''        
-        def consCurso:
-            vigencia = vigenciaEntry.get().strip()
-            codigo = codigoEntry.get().strip()
-            
-            tree.insert('', END, text='Ale', values=(vigencia, codigo))
-            tree.insert('', END, text='Iris', values=('45', '78'))'''
+        tree.heading('#1', text='Nombre Escuela')
+        tree.heading('#2', text='Código Curso')
+        tree.heading('#3', text='Requisitos')
+
+        def consultaRe():
+            codigo = nombreEntry.get().strip()
+            val = [(codigo)]
+            select_query = ('Select nombreEscuela, codigoCurso, codRequisito from requisito where codigoCurso = %s')
+            c.execute(select_query, val)
+            user = c.fetchall()
+            if codigo != '':
+                if len(codigo) == 6:
+                    for ro in user:
+                        tree.insert('',END, text="",values=(ro[0],ro[1],ro[2]))
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 6 carácteres (Ej:TI3600)')
+            else:
+                    messagebox.showwarning('Error', 'Debe llenar todos los espacios')
 
 
         botonCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
         botonCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCR.pack()
         botonCR.place(x=550, y=102, width=200)
+        botonCR['command']=consultaRe
 
     else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
@@ -1237,27 +1298,36 @@ def consultarCo():
         nombreEntry = tk.Entry(root, font=(fuente,14))
         nombreEntry.place(x=180, y=106, width=280, height=30)
         
-        tree = ttk.Treeview(root, columns=('Curso','Codigo','Correquisitos'))
+        tree = ttk.Treeview(root, columns=('Escuela','Codigo','Correquisitos'))
+        tree['show']='headings'
         tree.pack()
         tree.place(x=50, y=200, width=700, height=250)
 
-        tree.heading('#0', text='Nombre del curso')
-        tree.heading('#1', text='Código Correquisito')
-        tree.heading('#2', text='Correquisitos')
+        tree.heading('#1', text='Nombre Escuela')
+        tree.heading('#2', text='Código Curso')
+        tree.heading('#3', text='Correquisitos')
 
-
-        '''
-        def consCurso:
-            vigencia = vigenciaEntry.get().strip()
-            codigo = codigoEntry.get().strip()
+        def consultaCo():
+            codigo = nombreEntry.get().strip()
+            val = [(codigo)]
+            select_query = ('Select nombreEscuela, codigoCurso, codCorrequisito from correquisito where codigoCurso = %s')
+            c.execute(select_query, val)
+            user = c.fetchall()
+            if codigo != '':
+                if len(codigo) == 6:
+                    for ro in user:
+                        tree.insert('',END, text="",values=(ro[0],ro[1],ro[2]))
+                else:
+                    messagebox.showwarning('Error', 'Debe ser un código con 6 carácteres (Ej:TI3600)')
+            else:
+                    messagebox.showwarning('Error', 'Debe llenar todos los espacios')
             
-            tree.insert('', END, text='Ale', values=(vigencia, codigo))
-            tree.insert('', END, text='Iris', values=('45', '78'))'''
 
         botonCCR = tk.Button(root, text='CONSULTAR', borderwidth=1, relief='raised')
         botonCCR.config(bg=azul, font='Cambria 16 bold', fg= fgcolor)
         botonCCR.pack()
-        botonCCR.place(x=150, y=280, width=300)
+        botonCCR.place(x=550, y=102, width=200)
+        botonCCR['command']=consultaCo
 
      else: 
          messagebox.showwarning('Error', 'Solo el Consultor puede realizar esta función')
